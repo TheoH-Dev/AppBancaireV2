@@ -17,11 +17,6 @@ public class Menu{
 		System.out.println("----------------------------------------------------------------");
 		System.out.println("                            Menu                                ");
 		System.out.println("----------------------------------------------------------------");
-		System.out.println(String.format("%-16s", "1. Creer Client"));
-		System.out.println(String.format("%-16s", "2. Creer Compte"));
-		System.out.println(String.format("%-16s", "3. Rechercher Compte"));
-		System.out.println(String.format("%-16s", "4. Rechercher Client"));
-		System.out.println(String.format("%-16s", "5. Afficher Liste Comptes"));
 		System.out.println(String.format("%-16s", "6. Imprimer Info Client"));
 		System.out.println();
 		System.out.println(String.format("%-16s", "0. Quitter l'application CDA BANK"));
@@ -58,7 +53,7 @@ public class Menu{
 
 			try {
 				codeClient = in.next();
-				client = Util.findClientById(codeClient);
+				client = Util.findUserById(codeClient);
 				if (!client.equals(null)) {
 					creerCompteMenu();
 					int i = creerCompteMenuChoice(in);
@@ -90,7 +85,7 @@ public class Menu{
 			try {
 				System.out.println("Entrez un code client : ");
 				codeClient = in.next();
-				client = Util.findClientById(codeClient);
+				client = Util.findUserById(codeClient);
 				System.out.println(client.infoComptes());
 			} catch (java.lang.NullPointerException e) {
 				System.out.println("Erreur Client introuvable");
@@ -99,7 +94,7 @@ public class Menu{
 		case 6: // imprimer infoClient
 			System.out.println("Entrez un code client : ");
 			codeClient = in.next();
-			client = Util.findClientById(codeClient);
+			client = Util.findUserById(codeClient);
 
 			try {
 				Util.txtWritter(client.ficheClient());
@@ -163,12 +158,12 @@ public class Menu{
 			} else if (choice == 2) {
 				System.out.println("Entrez le N°Compte ");
 				String numCompte = in.next();
-				Client client = Util.findClientById(numCompte);
+				Client client = Util.findUserById(numCompte);
 				System.out.println(client.infoClient());
 			} else if (choice == 3) {
 				System.out.println("Entrez l'identifiant ");
 				String idClient = in.next();
-				Client client = Util.findClientById(idClient);
+				Client client = Util.findUserById(idClient);
 				System.out.println(client.infoClient());
 			} else {
 				System.out.println("Choix invalide");
