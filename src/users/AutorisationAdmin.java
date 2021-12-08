@@ -23,7 +23,7 @@ public interface AutorisationAdmin extends AutorisationConseiller{
 	}
 	
 	public default void desactiverClient(String idClient) {
-		Client client = Util.findUserById(idClient);
+		Client client = Util.findClientById(idClient);
 		client.setIsActif(false);
 		for (CompteBancaire compte : client.getListeComptes()) {
 			compte.desactiverCompte();

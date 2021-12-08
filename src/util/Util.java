@@ -3,7 +3,6 @@ package util;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -33,6 +32,7 @@ public class Util implements Serializable{
 
 	public static CompteBancaire findCompteById(String numCompte) {
 		try {
+			
 			for (int i = 0; i < CdaBank.getListAgences().size(); i++) {
 				Agence agence = CdaBank.getAgence(i);
 				for (int j = 0; j < agence.getListClient().size(); j++) {
@@ -52,13 +52,11 @@ public class Util implements Serializable{
 		}
 	}
 
-	public static Client findUserById(String numClient) {
+	public static Client findClientById(String numClient) {
 		try {
-			for (int i = 0; i < CdaBank.getListAgences().size(); i++) {
-				Agence agence = CdaBank.getAgence(i);
-				for (int j = 0; j < agence.getListClient().size(); j++) {
-					Client client = agence.getClient(j);
-					if (client.getId().equalsIgnoreCase(numClient)) {
+			for (Agence agence : CdaBank.getListAgences()) {
+				for (Client client : agence.getListClient()) {
+					if (client.getId().equals(numClient)) {
 						return client;
 					}
 				}
@@ -120,6 +118,19 @@ public class Util implements Serializable{
 
 		return null;
 	}
+	public static User findEmployeById(String id) {
+		try {
+			for (User user : CdaBank.getEmployeList()) {
+				if (user.getId().equalsIgnoreCase(id)) {
+					return user;
+				}
+		}
+		} catch (java.lang.NullPointerException e) {
+			return null;
+		}
+		
+		return null;
+	}
 
 	public static String numCompteGenerator() {
 		boolean idIsDispo = false;
@@ -146,7 +157,7 @@ public class Util implements Serializable{
 
 			String numClient = UUID.randomUUID().toString().substring(0, 10);
 			try {
-				if (findUserById(numClient).equals(null)) {
+				if (findClientById(numClient).equals(null)) {
 					idIsDispo = true;
 					return numClient;
 				} else {
@@ -165,7 +176,7 @@ public class Util implements Serializable{
 			String numClient = "CO";
 			numClient += UUID.randomUUID().toString().substring(0, 4);
 			try {
-				if (findUserById(numClient).equals(null)) {
+				if (findClientById(numClient).equals(null)) {
 					idIsDispo = true;
 					return numClient;
 				} else {
@@ -183,7 +194,7 @@ public class Util implements Serializable{
 			String numClient = "ADM";
 			numClient += UUID.randomUUID().toString().substring(0, 2);
 			try {
-				if (findUserById(numClient).equals(null)) {
+				if (findClientById(numClient).equals(null)) {
 					idIsDispo = true;
 					return numClient;
 				} else {
@@ -233,13 +244,14 @@ public class Util implements Serializable{
 		}
 	}
 
-	public static void save(ArrayList<Agence> listAgence) {
+	public static void saveAgence(ArrayList<Agence> listAgence) {
  
         try
         {
-            FileOutputStream fos = new FileOutputStream("BankData.ser");
+            FileOutputStream fos = new FileOutputStream("Agences.ser");
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(listAgence);
+            
             oos.close();
             fos.close();
         } 
@@ -248,14 +260,30 @@ public class Util implements Serializable{
             ioe.printStackTrace();
         }
 	}
+	public static void saveEmployee(ArrayList<User> listEmployee) {
+		
+		try
+		{
+			FileOutputStream fos = new FileOutputStream("Employes.ser");
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(listEmployee);
+			
+			oos.close();
+			fos.close();
+		} 
+		catch (IOException ioe) 
+		{
+			ioe.printStackTrace();
+		}
+	}
 
-	public static void readSave() {
+	public static void readSaveAgence() {
 
 		ArrayList<Agence> dataList = new ArrayList<Agence>();
         
         try
         {
-            FileInputStream fis = new FileInputStream("BankData.ser");
+            FileInputStream fis = new FileInputStream("Agences.ser");
             ObjectInputStream ois = new ObjectInputStream(fis);
  
             dataList = (ArrayList<Agence>) ois.readObject();
@@ -274,12 +302,36 @@ public class Util implements Serializable{
             c.printStackTrace();
             return;
         }
-         
-        //Verify list data
-        for (Agence agence : dataList) {
-            System.out.println(agence.getCodeAgence());
-        }
+
         CdaBank.setListAgences(dataList);
+	}
+	public static void readSaveEmployee() {
+		
+		ArrayList<User> dataList = new ArrayList<User>();
+		
+		try
+		{
+			FileInputStream fis = new FileInputStream("Employes.ser");
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			
+			dataList = (ArrayList<User>) ois.readObject();
+			
+			ois.close();
+			fis.close();
+		} 
+		catch (IOException ioe) 
+		{
+			ioe.printStackTrace();
+			return;
+		} 
+		catch (ClassNotFoundException c) 
+		{
+			System.out.println("Class not found");
+			c.printStackTrace();
+			return;
+		}
+		
+		CdaBank.setEmployeList(dataList);
 	}
 		
 	
@@ -305,13 +357,17 @@ public class Util implements Serializable{
 		int choice=-1;
 		do {
 			String input = in.next();
-			if (input.length() == 1 && Character.isDigit(input.charAt(0))) {
-				choice = Character.getNumericValue(input.charAt(0));
-			} else {
-				System.out.println("choix invalide");
-				choice = -1;
-			} 
+			try{
+	            choice = Integer.parseInt(input);
+	        }
+	        catch (NumberFormatException ex){
+	            System.out.println("Entree invalide");
+	        }
 		} while (choice == -1);
 		return choice;
 	}
+	
+
+
+
 }

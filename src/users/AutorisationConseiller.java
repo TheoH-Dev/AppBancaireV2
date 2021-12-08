@@ -3,6 +3,7 @@ package users;
 import java.util.Scanner;
 
 import bank.Agence;
+import bank.CdaBank;
 import comptes.CompteBancaire;
 import comptes.CompteCourant;
 import comptes.LivretA;
@@ -12,7 +13,7 @@ import util.Util;
 public interface AutorisationConseiller extends AutorisationClient{
 	
 	public default void ouvrirCompte(String idClient, int i) {
-		Client client = Util.findUserById(idClient);
+		Client client = Util.findClientById(idClient);
 		CompteBancaire compte;
 
 		if (client.verifNombreComptes() && i == 1) {
@@ -24,6 +25,8 @@ public interface AutorisationConseiller extends AutorisationClient{
 		} else if (client.verifNombreComptes() && i == 3) {
 			compte = new PlanEpargneLogement(client);
 			client.getListeComptes().add(compte);
+		}	else {
+			System.out.println("Entrée invalide");
 		}
 	}
 
@@ -40,15 +43,15 @@ public interface AutorisationConseiller extends AutorisationClient{
 		System.out.println("Login : ");
 		String login = in.next();
 		Client client = new Client(nom, prenom, dateNaissance, adresse, login);
-		agence.getListClient().add(client);
 		client.setCodeAgence(codeAgence);
+		agence.getListClient().add(client);
 	}
 
-		public default void modifAdresse(String idClient, String newAdresse) {
-			Client client = Util.findUserById(idClient);
+	public default void modifAdresse(String idClient, String newAdresse) {
+			Client client = Util.findClientById(idClient);
 			client.setAdresse(newAdresse);
 		}
-		public default void modifInfo(Scanner in, String idClient) {
+	public default void modifInfo(Scanner in, String idClient) {
 			System.out.println("Nom : ");
 			String nom = in.next();
 			System.out.println("Prenom : ");
@@ -57,7 +60,7 @@ public interface AutorisationConseiller extends AutorisationClient{
 			String dateNaissance = in.next();
 			System.out.println("Adresse : ");
 			String adresse = in.next();
-			Client client = Util.findUserById(idClient);
+			Client client = Util.findClientById(idClient);
 			System.out.println("Login : ");
 			String login = in.next();
 			client.setNom(nom);
